@@ -1,0 +1,13 @@
+.idea/
+venv/
+__pycache__/
+Credenziali_RASPBERRY_ANYDESK.docx
+Lib/__pycache__
+Config/
+log_file.txt
+Burned_Pucce
+Credenziali_RASPBERRY_ANYDESK.pdf
+CSV_data/
+Imagedrive/
+Lib/Creds/**
+

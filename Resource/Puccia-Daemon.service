@@ -1,0 +1,17 @@
+[Unit]
+Description = Daemon puccia-perfetta
+After = network.target
+
+[Service]
+Type = simple
+WorkingDirectory = /home/pi/Desktop/puccia-perfetta/
+ExecStart = /usr/bin/python3 /home/pi/Desktop/puccia-perfetta/main.py
+User = pi
+Group = pi
+Restart = always
+SyslogIdentifier = /home/pi/Desktop/puccia-perfetta/log_file.txt
+RestartSec = 5
+TimeoutStartSec = infinity
+
+[Install]
+WantedBy = multi-user.target 

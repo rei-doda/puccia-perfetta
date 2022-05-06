@@ -1,0 +1,7 @@
+gspread
+oauth2client
+datetime
+gpiozero
+numpy
+opencv-python
+pydrive
