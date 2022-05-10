@@ -1,0 +1,3 @@
+[submodule "braccio-robotico"]
+	path = braccio-robotico
+	url = https://gitlab.com/poggiolevante/braccio-robotico.git
