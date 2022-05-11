@@ -33,7 +33,7 @@ class GSheetHandler:
 		self.client = gspread.authorize(self.creds)
 		self.file = self.client.open(sheet)
 		self.list_worksheets = self.file.worksheets()
-		self.samplesheet = "Demonstrator_Sheet"
+		self.samplesheet = "Puccia_Sheet"
 		self.num_used_sheet = clean_list(self.list_worksheets, self.samplesheet)
 		self.temp_dats = [0, 0]
 		if self.num_used_sheet == 0:
@@ -100,7 +100,7 @@ class GSheetHandler:
 		if type(dats) != list:
 			raise ValueError("The dats parameter must be a list")
 		if len(dats) != 3:
-			raise ValueError("The dats parameter must have 3 number")
+			raise ValueError("The dats list parameter must have 3 elements")
 		if type(dats[0]) != str:
 			raise ValueError("")
 		if type(dats[1]) != int and type(dats[2]) != int:

@@ -1,6 +1,6 @@
 import math
 from threading import Thread
-from datetime import datetime, timedelta
+from datetime import datetime
 from Lib.ClassCentroidIDPuccia import CentroidIDPuccia
 from Lib.PusherDrive import *
 from Lib.GSheetHandler import *
@@ -13,13 +13,11 @@ print("Main_Mode: ON")
 
 this_path = os.path.dirname(__file__)
 
-data = dict(Data=datetime.today().strftime("%Y/%m/%d"), Ora=datetime.today().strftime("%H:%M:%S"))
-timestamp_delta = (datetime.strptime(data["Data"], "%Y/%m/%d") - timedelta(days=7)).timestamp()
-
 values = set_environment(this_path)
 centroid_obj = CentroidIDPuccia()
 
-fold_image_drive = "1Li9OeMTfImPr1mZ59QXMfySMVK_BiJb7"
+fold_image_drive_burned = "1AxPaDuzRjGrzUow8jWYzoxktAkXraQ9k"
+fold_image_drive_random = "1E1q8vDlWLsEPFK5i2aiw_yqVzt_U59fe"
 
 less = 0.2
 screened_burned = {}
@@ -31,7 +29,7 @@ interval = 2
 n_good = 0
 factor = 1.0
 rele = Thread(target=nothing)
-arm = Thread(target=nothing)
+# arm = Thread(target=nothing)
 
 if values["cred_path"] is None:
     print("")
@@ -46,7 +44,8 @@ else:
               "the script will not write on google drive: ", e)
 
 try:
-    drive_pusher = PusherDrive(fold_image_drive, values["creds_path"], values["image_drive_path"])
+    drive_good_pusher = PusherDrive(fold_image_drive_random, values["creds_path"], values["image_drive_path"])
+    drive_burned_pusher = PusherDrive(fold_image_drive_burned, values["creds_path"], values["path_burned"])
 except Exception as e:
     print("")
     print("OPS, something goes wrong with the constructor of PusherDrive, "
@@ -78,13 +77,13 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 try:
     while True:
 
-        dats = [datetime.now().strftime("%Y/%m/%d  %H:%M:%S"), centroid_obj.count_id - 1 - n_good, n_good]
+        data = dict(Data=datetime.now().strftime("%Y/%m/%d"), Ora=datetime.now().strftime("%H:%M:%S"))
+        dats = [data["Data"] + " " + data["Ora"], centroid_obj.count_id - 1 - n_good, n_good]
         mins = int(datetime.now().strftime("%M"))
 
         if timer == 3600:
             timer = 0
             values = set_environment(this_path)
-            clean_images(values["path_burned"], datetime.now().timestamp() - timestamp_delta)
 
         try:
             ret, full_frame = cap.read()
@@ -93,10 +92,6 @@ try:
             print("")
             print("OPS, something is wrong with the image retrieval, probably the camera is not connected, "
                   "or there is some problem with the configuration file: ", e)
-            exit()
-        except AttributeError:
-            print("")
-            print("BYE")
             exit()
 
         if mins % interval == 0 and write is False:
@@ -108,18 +103,8 @@ try:
             except Exception as e:
                 print("")
                 print("OPS, something goes wrong with google sheets: ", e)
-            try:
-                cv2.imwrite(os.path.join(values["image_drive_path"], str(int(datetime.now().timestamp())) + ".jpg"), full_frame)
-                push_thread = Thread(target=drive_pusher.push())
-                push_thread.start()
-            except ApiRequestError as e:
-                print("")
-                print("OPS, script cannot communicate with drive: ", e)
-            except NameError:
-                pass
-            except Exception as e:
-                print("")
-                print("OPS, something goes wrong with the upload on drive: ", e)
+            cv2.imwrite(os.path.join(values["image_drive_path"], str(int(datetime.now().timestamp())) + ".jpg"),
+                        full_frame)
             write = True
         elif mins % interval != 0 and write is True:
             write = False
@@ -130,7 +115,7 @@ try:
         roi_y = value_proportion(values["roi_y"], 400, height_res)
         wy = value_proportion(values["wy"], 400, height_res)
 
-        limiter = value_proportion(values["arm_limiter"], 400, full_frame.shape[1])
+        # limiter = value_proportion(values["arm_limiter"], 400, full_frame.shape[1])
 
         full_frame = full_frame[roi_y:roi_y + wy, roi_x:roi_x + wx]
 
@@ -164,7 +149,8 @@ try:
             conts, hierarchy = cv2.findContours(blurred, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             cv2.imshow("Operative_Mask", blurred)
 
-        rad_prop = radius_proportion([values["min_radius"], values["min_radius"] + values["max_radius"]], 400, height_res)
+        rad_prop = radius_proportion([values["min_radius"], values["min_radius"] + values["max_radius"]], 400,
+                                     height_res)
 
         for i in range(len(conts)):
             x, y, w, h = cv2.boundingRect(conts[i])
@@ -210,9 +196,9 @@ try:
                     else:
                         cv2.circle(full_frame, (xr, yr), rr, (0, 0, 255), 4)
                         cv2.putText(full_frame, str(pid), (xr, yr), font, 1.0, (0, 0, 255))
-                    if x == limiter:
-                        arm = Thread(target=pin_on, args=(20, 1))
-                        arm.start()
+                    # if x == limiter:
+                        # arm = Thread(target=pin_on, args=(20, 1))
+                        # arm.start()
                 else:
                     cv2.circle(full_frame, (xr, yr), rr, (0, 255, 0), 3)
                 cv2.rectangle(full_frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
@@ -236,42 +222,31 @@ try:
         if key == ord('q'):
             break
 
+        now = datetime.strptime(data["Ora"], "%H:%M:%S")
+
+        if now.hour == 2 and now.minute == 0 and now.second == 0:
+            try:
+                print("I'm pushing images on drive..")
+                drive_good_pusher.push()
+                print("Done!")
+                print("I'm pushing burned images on drive..")
+                drive_burned_pusher.push()
+                print("Done!")
+            except ApiRequestError as e:
+                print("")
+                print("OPS, script cannot communicate with drive: ", e)
+            except NameError:
+                pass
+            except Exception as e:
+                print("")
+                print("OPS, something goes wrong with the upload on drive: ", e)
+
         sleep(0.01)
 
-        timer = timer + 1
+        timer += 1
 except KeyboardInterrupt:
     print("")
     print("BYE")
 
 cap.release()
 cv2.destroyAllWindows()
-
-# Raggio del cerchio in percentuale rispetto al frame _/
-# Script regolatore: _/
-# selezionare 1 dei 3 layer bgr _/
-# Save burned puccia _/
-# Flag per azzeramento id lost puccie _/
-# Ottimizzare la grandezza delle trackbars e finestre _/
-# collegiate main e picker _/
-# picker che ricorda i valori sul file _/
-# aggiungere i valori di morph ellipse e blurred al picker e file _/
-# far leggere in tempo reale i valori del file _/
-# aggiustare l'ordine delle trackbar _/
-# sistemare nome dei file delle puccie bruciate _/
-# modalità debug _/
-# sistema di watchdog (raspberry) _/
-# gpiozero comando che rileva le puccie bruciate e invia un segnale led _/
-# test su raspberry _/
-# configurare anydesk _/
-# funzione per pulire le immagini vecchie di un tot _/
-# variabile di checkPuccieBruciate _/
-# googleSheetHandler -> Dinamico  _/
-# script EventLogger _/
-# Picker colore Puccie _/
-# restringere campo visivo ROI _/
-# salvare immagini davidino _/
-# mlc open-cv
-# video
-# Pubblicazione ASIRID
-# media colore di ogni puccia suddividendo il quadrato in tanti piccoli quadrati (pucce sovrapposte o vicine)
-# gpiozero bracci meccanici

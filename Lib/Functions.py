@@ -234,10 +234,10 @@ def set_environment(path: str):
             path_burned = os.path.join(path, "Burned_Pucce")
             values["path_burned"] = path_burned
 
-        #if not os.path.exists(os.path.join(path, "CSV_data")):
+        #if not os.path.exists(os.path.join(path, "CSV_data")):      #Deprecated
             #os.mkdir(os.path.join(path, "CSV_data"))
             #csv_path = os.path.join(path, "CSV_data")
-            #values["csv_path"] = csv_path                         #Not useful
+            #values["csv_path"] = csv_path
         #else:
             #csv_path = os.path.join(path, "CSV_data")
             #values["csv_path"] = csv_path
