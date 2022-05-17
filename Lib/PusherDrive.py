@@ -27,18 +27,18 @@ class PusherDrive:
 	def push(self):
 		"""This method uploads images to google drive, it does not accept any arguments"""
 		if len(os.listdir(self.path_image)) == 0:
-            print("\n", self.path_image, "is empty, nothing will be uploaded on drive")
-        else:
-            for image in os.listdir(self.path_image):
-                if image.endswith(".jpg"):
-                    try:
-                        gfile = self.drive.CreateFile({'title': image, 'parents': [{'id': self.id_fold}]})
-                        print(gfile)
-                        gfile.SetContentFile(os.path.join(self.path_image, image))
-                        gfile.Upload()
-                        print("[" + image + " loaded on drive]")
-                        gfile.content.close()
-                        os.remove(os.path.join(self.path_image, image))
-                    except FileNotUploadedError:
-                        print("")
-                        print("OPS, " + image + " not loaded on drive")
+			print("\n", self.path_image, "is empty, nothing will be uploaded on drive")
+		else:
+			for image in os.listdir(self.path_image):
+				if image.endswith(".jpg"):
+					try:
+						gfile = self.drive.CreateFile({'title': image, 'parents': [{'id': self.id_fold}]})
+						print(gfile)
+						gfile.SetContentFile(os.path.join(self.path_image, image))
+						gfile.Upload()
+						print("[" + image + " loaded on drive]")
+						gfile.content.close()
+						os.remove(os.path.join(self.path_image, image))
+					except FileNotUploadedError:
+						print("")
+						print("OPS, " + image + " not loaded on drive")
