@@ -4,15 +4,10 @@ from pydrive.files import *
 import os
 
 def authorize_drive():
-    gauth = GoogleAuth()
-    gauth.DEFAULT_SETTINGS['client_config_file'] = "client_secret.json"
-    gauth.LoadCredentialsFile("mycreds.txt")
-    return GoogleDrive(gauth)
-
-class DriveReport(object):
-    def __init__(self):
-        self.drive = authorize_drive()
-
+	gauth = GoogleAuth()
+	gauth.DEFAULT_SETTINGS['client_config_file'] = "client_secret.json"
+	gauth.LoadCredentialsFile("mycreds.txt")
+	return GoogleDrive(gauth)
 
 class PusherDrive:
 	"""This class is used to load jpg images into a specific drive folder"""
