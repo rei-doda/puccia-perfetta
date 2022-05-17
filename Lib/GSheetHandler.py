@@ -11,7 +11,7 @@ def clean_list(worksheets: list, token_str: str):
 		raise ValueError("The token_str parameter must be a string")
 	cleaned_list = []
 	for sheet in worksheets:
-		if sheet.title[0:18] == token_str:
+		if sheet.title[0:len(token_str)] == token_str:
 			cleaned_list.append(sheet)
 	return len(cleaned_list)
 

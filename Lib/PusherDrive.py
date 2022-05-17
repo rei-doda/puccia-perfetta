@@ -19,31 +19,26 @@ class PusherDrive:
 			raise ValueError("The path_image argument must be a string")
 		self.id_fold = id_fold
 		self.path_image = path_image
-		self.path_creds = path_creds
-		#self.curr_dir = os.getcwd()
-		#os.chdir(self.path_creds)
+		self.path_creds = os.path.join(path_creds, "client_secrets.json")
+		GoogleAuth.DEFAULT_SETTINGS["client_config_file"] = self.path_creds
 		self.gauth = GoogleAuth()
 		self.drive = GoogleDrive(self.gauth)
-		#os.chdir(self.curr_dir)
 
 	def push(self):
 		"""This method uploads images to google drive, it does not accept any arguments"""
-		prev_image = ""
-		#print(os.getcwd())
-		for image in os.listdir(self.path_image):
-			if image.endswith(".jpg"):
-				try:
-					gfile = self.drive.CreateFile({'title': image[:-4], 'parents': [{'id': self.id_fold}]})
-					gfile.SetContentFile(os.path.join(self.path_image, image))
-					gfile.Upload()
-					print("[" + image + " loaded on drive]")
-					gfile.content.close()
-				except FileNotUploadedError:
-					print("")
-					print("OPS, " + image + " not loaded on drive")
-			if prev_image != "":
-				os.remove(os.path.join(self.path_image, prev_image))
-				prev_image = ""
-			else:
-				prev_image = image
-		os.remove(os.path.join(self.path_image, prev_image))
+		if len(os.listdir(self.path_image)) == 0:
+            print("\n", self.path_image, "is empty, nothing will be uploaded on drive")
+        else:
+            for image in os.listdir(self.path_image):
+                if image.endswith(".jpg"):
+                    try:
+                        gfile = self.drive.CreateFile({'title': image, 'parents': [{'id': self.id_fold}]})
+                        print(gfile)
+                        gfile.SetContentFile(os.path.join(self.path_image, image))
+                        gfile.Upload()
+                        print("[" + image + " loaded on drive]")
+                        gfile.content.close()
+                        os.remove(os.path.join(self.path_image, image))
+                    except FileNotUploadedError:
+                        print("")
+                        print("OPS, " + image + " not loaded on drive")

@@ -50,6 +50,7 @@ except KeyError as e:
     print("")
     print("Ops, there's some missing values in configurations.txt")
     print(e)
+    print("Exception Name: ", e.__class__.__name__)
     print("BYE")
     print("")
     exit()
@@ -274,6 +275,7 @@ while True:
         except Exception as e:
             print("")
             print(e)
+            print("Exception Name: ", e.__class__.__name__)
         break
     sleep(0.05)
 

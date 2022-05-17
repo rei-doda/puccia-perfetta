@@ -28,6 +28,9 @@ write = False
 interval = 2
 n_good = 0
 factor = 1.0
+block_hour = 17
+block_min = 58
+block_sec = 0
 rele = Thread(target=nothing)
 # arm = Thread(target=nothing)
 
@@ -42,6 +45,7 @@ else:
         print("")
         print("OPS, something goes wrong with the constructor of GSheetHandler, "
               "the script will not write on google drive: ", e)
+        print("Exception Name: ", e.__class__.__name__)
 
 try:
     drive_good_pusher = PusherDrive(fold_image_drive_random, values["creds_path"], values["image_drive_path"])
@@ -50,6 +54,7 @@ except Exception as e:
     print("")
     print("OPS, something goes wrong with the constructor of PusherDrive, "
           "the script will not push image on google drive: ", e)
+    print("Exception Name: ", e.__class__.__name__)
 
 if values["debug"] == 1:
     os.system("python3 main_debug.py")
@@ -92,6 +97,7 @@ try:
             print("")
             print("OPS, something is wrong with the image retrieval, probably the camera is not connected, "
                   "or there is some problem with the configuration file: ", e)
+            print("Exception Name: ", e.__class__.__name__)
             exit()
 
         if mins % interval == 0 and write is False:
@@ -103,6 +109,7 @@ try:
             except Exception as e:
                 print("")
                 print("OPS, something goes wrong with google sheets: ", e)
+                print("Exception Name: ", e.__class__.__name__)
             cv2.imwrite(os.path.join(values["image_drive_path"], str(int(datetime.now().timestamp())) + ".jpg"),
                         full_frame)
             write = True
@@ -224,12 +231,12 @@ try:
 
         now = datetime.strptime(data["Ora"], "%H:%M:%S")
 
-        if now.hour == 2 and now.minute == 0 and now.second == 0:
+        if now.hour == block_hour and now.minute == block_min and now.second == block_sec:
             try:
-                print("I'm pushing images on drive..")
+                print("\nI'm pushing images on drive..")
                 drive_good_pusher.push()
                 print("Done!")
-                print("I'm pushing burned images on drive..")
+                print("\nI'm pushing burned images on drive..", end="\n\n")
                 drive_burned_pusher.push()
                 print("Done!")
             except ApiRequestError as e:
@@ -240,6 +247,8 @@ try:
             except Exception as e:
                 print("")
                 print("OPS, something goes wrong with the upload on drive: ", e)
+                print("Exception Name: ", e.__class__.__name__)
+                print("")
 
         sleep(0.01)
 

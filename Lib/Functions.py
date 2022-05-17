@@ -66,6 +66,7 @@ def take_file_video_mp4_avi_wmv(path: str):
         return results
     except Exception as e:
         print("")
+        print("Exception Name: ", e.__class__.__name__)
         raise ValueError(e)
 
 
@@ -246,6 +247,7 @@ def set_environment(path: str):
     except OSError as e:
         print("")
         print(e)
+        print("Exception Name: ", e.__class__.__name__)
 
 
 def check_conf_file(path: str):

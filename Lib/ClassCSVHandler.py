@@ -19,6 +19,7 @@ class CSVHandler:
             except Exception as e:
                 print("")
                 print(e)
+                print("Exception Name: ", e.__class__.__name__)
 
     def write_data(self, dict_data: dict):
         """This method is used to write a line in the csv file, it accepts a parameter:

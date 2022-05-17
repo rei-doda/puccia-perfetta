@@ -255,6 +255,7 @@ while True:
         except Exception as e:
             print("")
             print(e)
+            print("Exception Name: ", e.__class__.__name__)
 
         cap.release()
         cv2.destroyAllWindows()
