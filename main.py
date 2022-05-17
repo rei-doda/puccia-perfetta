@@ -28,8 +28,8 @@ write = False
 interval = 2
 n_good = 0
 factor = 1.0
-block_hour = 17
-block_min = 58
+block_hour = 19
+block_min = 7
 block_sec = 0
 rele = Thread(target=nothing)
 # arm = Thread(target=nothing)
