@@ -26,19 +26,19 @@ class PusherDrive:
 		self.path_image = path_image
 		self.path_creds = os.path.join(path_creds, "client_secrets.json")
 		gauth = GoogleAuth()
-        # Try to load saved client credentials
-        gauth.LoadCredentialsFile("mycreds.txt")
-        if gauth.credentials is None:
-        # Authenticate if they're not there
-            gauth.LocalWebserverAuth()
-        elif gauth.access_token_expired:
-        # Refresh them if expired
-            gauth.Refresh()
-        else:
-        # Initialize the saved creds
-            gauth.Authorize()
-        # Save the current credentials to a file
-        gauth.SaveCredentialsFile("mycreds.txt")
+		# Try to load saved client credentials
+		gauth.LoadCredentialsFile("mycreds.txt")
+		if gauth.credentials is None:
+		# Authenticate if they're not there
+			gauth.LocalWebserverAuth()
+		elif gauth.access_token_expired:
+		# Refresh them if expired
+			gauth.Refresh()
+		else:
+		# Initialize the saved creds
+			gauth.Authorize()
+		# Save the current credentials to a file
+		gauth.SaveCredentialsFile("mycreds.txt")
 		# GoogleAuth.DEFAULT_SETTINGS["client_config_file"] = self.path_creds
 		self.gauth = GoogleAuth()
 		self.drive = GoogleDrive(self.gauth)
