@@ -4,13 +4,6 @@ from pydrive.files import *
 import os
 
 
-def authorize_drive():
-    gauth = GoogleAuth()
-    gauth.DEFAULT_SETTINGS['client_config_file'] = "client_secret.json"
-    gauth.LoadCredentialsFile("mycreds.txt")
-    return GoogleDrive(gauth)
-
-
 class PusherDrive:
     """This class is used to load jpg images into a specific drive folder"""
 
@@ -27,6 +20,7 @@ class PusherDrive:
         self.id_fold = id_fold
         self.path_image = path_image
         self.path_creds = os.path.join(path_creds, "client_secrets.json")
+        # GoogleAuth.DEFAULT_SETTINGS["client_config_file"] = self.path_creds
         gauth = GoogleAuth(os.path.join(path_creds, "settings.yaml"))
         # Try to load saved client credentials
         gauth.LoadCredentialsFile(os.path.join(path_creds, "credentials.json"))
@@ -42,7 +36,6 @@ class PusherDrive:
             gauth.Authorize()
         # Save the current credentials to a file
         gauth.SaveCredentialsFile(os.path.join(path_creds, "credentials.json"))
-        # GoogleAuth.DEFAULT_SETTINGS["client_config_file"] = self.path_creds
         self.gauth = gauth
         self.drive = GoogleDrive(self.gauth)
 
