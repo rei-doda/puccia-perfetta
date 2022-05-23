@@ -251,11 +251,15 @@ try:
                 print("")
 
         sleep(0.01)
-
         timer += 1
+
+    cap.release()
+    cv2.destroyAllWindows()
 except KeyboardInterrupt:
     print("")
     print("BYE")
-
-cap.release()
-cv2.destroyAllWindows()
+except Exception as e:
+    print("")
+    print("OPS, something goes wrong with main.py: ", e)
+    print("Exception Name: ", e.__class__.__name__)
+    print("")
