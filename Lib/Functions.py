@@ -77,7 +77,7 @@ def take_cv_source(source: bool = False):
     if type(source) != bool:
         raise ValueError("The source argument must be Boolean")
     if source:
-        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "Resource")
+        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "Resource", "Media")
         file = take_file_video_mp4_avi_wmv(path)
         if len(file) == 0:
             return "s"
