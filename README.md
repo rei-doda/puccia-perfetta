@@ -55,8 +55,6 @@ Dopo per aver configurato il tutto con uno **script** per la **configurazione**,
 > - **cv2.findContours**(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE): che serve per la ricerca, all'interno dell' **frame-hsv**, *curve* che uniscono *linee continue di punti*. (Nello specifico cerca ***semi-archi*** che poi successivamente completa affinchè diventino **circonferenze**)
 
 Grazie a queste funzioni  l'algoritmo riconosce le pucce presenti nell'immagine e gli assegna un **ID** (*univoco* per distinguere una puccia da un'altra durante *l'analisi dei frame*), poi effettua la **media colore** delle *circonferenze* (nello specifico la media colore del ***rettangolo iscritto nella circonferenze***). Se le medie rientrano in un determinato **range** di colori la puccia è *buona*, se invece rientra in un altro range è *bruciata*. A quel punto lo script **attiva**, attraverso un ***segnale digitale*** ed un Relè, la luce o una eventuale sirena (**l'attuatore**) per ogni puccia bruciata presente nel **frame**. Nel mentre l'algoritmo raccoglie **dati** (es. numero pucce buone, non buone etc.) e li scrive periodicamente su un *foglio Google*; parallelamente effettua ***l'upload*** di alcuni frame di pucce bruciate e *non* su ***Google Drive*** in *cartelle specifiche* (come già descritto nell'introduzione).
-![Puccia-Conf](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/Sample_mdebug.png)
-
 
 ## Open Source e Documentazione:
 Questo progetto è open source: chiunque può scaricare i file necessari, ricreare il progetto e contribuire al suo miglioramento. Non ci sono restrizioni di licenza d'uso, ma si invita a citare che è stato realizzato dagli studenti [ASIRID.](http://asirid.it)
@@ -110,9 +108,76 @@ Tutto il materiale necessario si trova [su GitLab.](https://gitlab.com/poggiolev
 >- ***Resource***/: contiene cartelle che al loro interno contengono file **utili** a *questa documentazione* e al *progetto*.
 >- ***Image_drive***/: conterrà **immagini**, *prese a campione (effettuate ad intervalli regolari)*, delle pucce.
 >- ***Burned_Pucce***/: conterrà le **immagini** delle pucce ***bruciate rilevate***.
->- ***Main_scripts.py***: è l'insieme degli **script** *"principali"* (main.py, main_debug.py, Picker.py)
+>- ***Main_scripts.py***: è l'insieme degli **script** *"principali"* (*main.py, main_debug.py, Picker.py*)
 
 ## Passi da seguire per l'implementazione:
+Dopo aver preparato e collegato tutti i dispositivi come riportato nella topologia *in figura*, avviare il **RaspBerryPi** e :
+- Aprire il **terminale** Linux
+- Lanciare i seguenti ***comandi*** (con i ***privilegi di amministratore***):
+
+```console
+rasp@puccia:~$ sudo apt install libatlas-base-dev
+# per installare le librerie di base
+rasp@puccia:~$ sudo apt-get update && sudo apt full-upgrade -y
+# per aggiornare l'intero sistema
+```
+- Spostarsi tramite ***console*** nel percorso/cartella che più si preferisce e lanciare il comando:
+```console
+rasp@puccia:~$ git clone https://gitlab.com/poggiolevante/puccia-perfetta
+# per scaricare la repository da Gitlab
+```
+- Spostarsi nella cartella della repository *appena scaricata*:
+```console
+rasp@puccia:~$ cd ../puccia-perfetta
+```
+- Installare le ***librerie necessarie*** per gli script del progetto, tramite *questo comando*:
+```console
+rasp@puccia:~$ pip3 install -r requirements.txt
+# requirements.txt è un file presente nella repository che riporta tutte le librerie utilizzate
+```
+- A questo punto avviare **.\Picker.py** (*specifico per la configurazione iniziale*), lanciando questo comando:
+```console
+rasp@puccia:~$ python3 Picker.py
+# questo script oltre alla configurazione, serve per impostare "l'ambiente di lavoro" creando anche alcune le cartelle viste nel Rasp-tree riportato qui sopra
+```
+>Questo è quello che vi si presenterà:
+>![Picker_begin](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/Picker_begin.png)
+>- Muovere lo slider ***Stream_Port*** fino a selezionare lo stream della videocamera che ci interessa e premere ***q*** per selezionarla e passare alla configurazione successiva.
+> > Altrimenti è possibile cliccare **s** per *switchare* da *Stream_Mode* a ***Resource_Mode***, che è una modalità che permette di selezionare dei video da utilizzare per la *configurazione*. Video che devono essere messi in **.\Resource\Media** (i formati supportati sono: *".mp4", ".avi", ".wmv"*).
+> 
+> Successivamente di apriranno queste finestre:
+> ![Picker_conf](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/Picker_conf.png)
+>>**!ATTENZIONE**: nel caso non si riuscisse a visualizzare l'intera schermata degli slider, posizionatevi con il cursore sopra la finestra, cliccateci e contemporaneamente premete *Alt* e spostatela verso l'alto fino a scoprire il resto degli slider.
+>
+>  Vediamo la *funzionalità* degli ***slider***:
+>  - **L-H, U-H, L-S, U-S, L-V, U-V**: questi slider servono ad isolare il soggetto da riconoscere (nel nostro caso ***le pucce***). Finestra a cui fare riferimento: **Bitwise/Color** (*BiancoNero/Colorata*).
+>  - **Morph_op, Morph_cl**: questi slider  servono per eliminare ***"rumore"*** o ***"imprecisioni"*** dalla **maschera HSV** creata con gli *slider precedenti*. Finestra a cui fare riferimento: **Morph/Blurred** (si può notare l'effetto di questi slider mettendo a paragone la finestra *Bitwise* e la finestra *Morph*).
+> - **Blur**: serve per mettere un ***effetto sfocatura*** alla ***maschera HSV***, nel caso fosse necessaria, al fine di isolare maggiormente la puccia. Finestra a cui fare riferimento: **Morph/Blurred**.
+> - **Brightness**: serve per regolare la ***luminosità*** dell'immagine.
+> - **Contrast**: serve per regolare il ***contrasto*** dell'immagine.
+> - **Saturation**: serve per regolare la ***saturazione*** dell'immagine.
+> - **Hue**: serve per regolare la ***tonalità*** dell'immagine.
+> - **Gamma**: serve per regolare la ***correzione gamma*** dell'immagine.
+> - **Auto_WB**: serve per attivare o meno il ***bilanciamento automatico dei bianchi***.
+> - **Min_radius, Max_radius**: servono rispettivamente per selezionare il *raggio* *minimo* e il *raggio massimo* (in questo caso delle nostre pucce) che il nostro sistema deve rilevare. Finestra di riferimento: **Frame_radius**. Dall'immagine di possono notare due circonferenze: quella **blu** (*Min_radius*), quella **rossa** (Max_radius).
+> - **Arm_verse**, **Arm_limiter**: servono per il braccio-robotico, nello ***stato attuale*** del progetto non ***vanno utilizzati***.
+>- **Roi_x, Roi_y**, **wx**, **wy** : utilizzati in combinazione con ***wx*** e ***wy*** per delimitare un ***Range of Interest*** a partire dal frame HSV. Questo per eliminare dal frame che sarà dato in pasto allo script, eventuali *porzioni periferiche* dell'immagine ***non necessarie***. Finestra di riferimento: **Frame_radius**(*Roi visualizzabile in quest'ultima, è rappresentato dal rettangolo blu*).
+>- **Morph_Blur**: serve per scegliere effetti usare sul **frame HSV**, se settato a **0** usa sia il ***blur*** che l'effetto dato dai ***morph***, se settato a **1** utilizza solo i ***morph***, se settato a **2** invece utilizza solo il ***blur***.
+>- **Debug_mode**: serve per avviare a *configurazione **finita*** un altro script, nello specifico ***main_debug.py***. Se settato a **0** *non avvierà nulla*, se settato a **1** lo avvierà.
+
+- Una volta conclusa la configurazione con **.\Picker.py** premere "***s***" per *salvare* (oppure "***q***" per uscire *senza salvare*).
+>**!ATTENZIONE**: il file di configurazione che verrà salvato in .**\Config** è indispensabile per l'utilizzo degli script ***main_debug.py*** e ***main.py***, senza il file di configurazione gli script non partono.
+- A questo punto avviare **main_debug.py**, per effettuare un altro tipo di configurazione (nello specifico per stabilire ***il range*** di media colore per il quale una puccia può considerarsi "*buona*" o "*bruciata*") tramite il comando:
+```console
+rasp@puccia:~$ python3 main_debug.py
+```
+>Queste sono le schermate che si presenteranno:
+>![Puccia-Conf](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/Sample_mdebug.png)
+>Lo script è molto simile al **.\Picker.py**, serve per visualizzare in *tempo reale* gli effetti della configurazione fatta e nel caso sistemare qualche valore come per esempio il *raggio*. Mostra la finestra **"Operative_Mask"** che non è altro che la *maschera*, costruita con la configurazione precedente, che lo script utilizza per *rilevare le pucce*. L'altra finestra: **"Puccia_Cam"** da cui è possibile vedere in tempo reale il ricoscimento della puccia, al centro si trova **l'ID**, in alto a sinistra il valore del ***raggio rilevato*** e in alto a destra la ***media colore*** (se è buona avrà un valore *alto*, se è bruciata il valore sarà *basso*).
+>Gli slider presenti sono praticamente *gli stessi* di .\Picker.py, con un aggiunta però:
+>- **mAVG_color, MAVG_color**: (*valore minimo, valore massimo*) muovendo questi slider si vanno selezionare *i valori della media colore* per il quale la puccia riconosciuta è considerata ***buona*** o ***bruciata***. (Nel caso fosse buona il ***cerchio di rilevazione*** sarà **verde**, se bruciata invece sarà **rosso**).
+
+- Conclusa anche la configurazione con il **.\main_debug.py** premere "s" per salvare
 
 ## Stato attuale del progetto:
 Il progetto è stato pubblicato a Maggio 2022, nella sua **prima versione** ed è **attualmente funzionante**.
@@ -125,7 +190,8 @@ Il progetto è stato pubblicato a Maggio 2022, nella sua **prima versione** ed �
 
 ## Autori:
 **Software**: 
-Tommaso Orlando, Rei Doda, Davide Palma e Nicola nargiso.
+Tommaso Orlando, Rei Doda, Davide Palma e Nicola Nargiso.
+
 **Hardware** & **Dimostratore**:
 Carmine Capece, Francesco Muccilli e Giovanni Pompigna.
 >**Maggio 2022**
