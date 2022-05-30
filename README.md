@@ -1,8 +1,14 @@
 # Puccia-Perfetta
-Un sistema in grado di riconoscere, grazie ad una videocamera, delle pucce **bruciate** in fase di produzione e che notifica tramite un **attuatore** (sonoro o visivo) l'arrivo di quest'ultime. Il sistema è anche in grado di scrivere i dati raccolti su un foglio di calcolo google al fine di effettuare **analisi sulla produzione** ed è in grado di caricare foto su **Google Drive** con il fine di effettuare test e studi per migliorare il **riconoscimento** delle pucce da **scartare** in produzione. ![Puccia-perf](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/puccia-perf.png)
+Un sistema in grado di **riconoscere**, grazie ad una videocamera, delle **pucce bruciate** in fase di produzione e che notifica tramite un **attuatore** (sonoro o visivo) il passaggio di quest'ultime. Il sistema è in grado di scrivere le rilevazioni su un foglio Google al fine di effettuare **analisi sulla produzione** ed è in grado di caricare le foto delle pucce su **Google Drive** per fini diagnostici e di miglioramento.  
+![Puccia-perf](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/puccia-perf.png)
+
+## Open Source e Documentazione:
+Questo progetto è open source: chiunque può scaricare i file necessari, ricreare il progetto e contribuire al suo miglioramento. Non ci sono restrizioni di licenza d'uso, ma si invita a citare che è stato realizzato dagli studenti [ASIRID.](http://asirid.it)
+
+Tutto il materiale necessario si trova [su GitLab.](https://gitlab.com/poggiolevante/puccia-perfetta)
 
 # Specifiche del progetto:
-Il progetto è nato dall'esigenza di un'azienda che produce prodotti alimentari, di **facilitare** la vita al suo addetto al confezionamento. Quest'ultimo vedendosi arrivare moltissime pucce da impacchettare, necessitava di un **segnale** che lo avvisasse dell'arrivo di una puccia **"non buona",** in modo tale da prepararsi a scartarla. Per risolvere questo problema, abbiamo pensato ad un sistema costituito da pochissimi componenti, come un **RaspBerryPi** che, attraverso una **telecamera** individua e segnala le pucce (per il momento solo quelle **bruciate**) da scartare. Per testare il codice scritto ***ad-hoc*** per il progetto abbiamo costruito un **nastro trasportatore** per *"simulare"* il nastro sul quale le pucce vengono portate dal forno alla zona di confezionamento, presente in azienda.
+Il progetto è nato dall'esigenza di un'azienda che produce prodotti alimentari, di **facilitare** la vita al suo addetto al confezionamento. Quest'ultimo vedendosi arrivare moltissime pucce da impacchettare, necessitava di un **segnale** che lo avvisasse dell'arrivo di una puccia **"non buona",** in modo tale da prepararsi a scartarla. Per risolvere questo problema, abbiamo pensato ad un sistema costituito da pochissimi componenti, come un **RaspBerry Pi** che, attraverso una **telecamera** individua e segnala le pucce (per il momento solo quelle **bruciate**) da scartare. Per testare il codice scritto ***ad-hoc*** per il progetto abbiamo costruito un **nastro trasportatore** per *"simulare"* il nastro sul quale le pucce vengono portate dal forno alla zona di confezionamento, presente in azienda.
 ![Puccia-Demonstrator](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/demonstrator.jpg)
 
 > *Il **processo** di ***costruzione*** del dimostratore non è descritto in questa documentazione, ma nel caso si volesse riprodurre, l'importante è avere bene in mente **l'idea** che serve un **nastro** che *scorre* (sul quale andranno adagiate le pucce) e una **videocamera** che *punta* proprio sul telo o nastro. In più basta un po' ***pazienza***, di ***creatività*** e un po' di ***olio di gomito***.
@@ -28,12 +34,8 @@ Dopo per aver configurato il tutto con uno **script** per la **configurazione**,
 > ![HSV_BGR](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/HSV_BGR_frame.png)
 > - **cv2.findContours**(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE): che serve per la ricerca, all'interno dell' **frame-hsv**, *curve* che uniscono *linee continue di punti*. (Nello specifico cerca ***semi-archi*** che poi successivamente completa affinchè diventino **circonferenze**)
 
-Grazie a queste funzioni  l'algoritmo riconosce le pucce presenti nell'immagine e gli assegna un **ID** (*univoco* per distinguere una puccia da un'altra durante *l'analisi dei frame*), poi effettua la **media colore** delle *circonferenze* (nello specifico la media colore del ***rettangolo iscritto nella circonferenze***). Se le medie rientrano in un determinato **range** di colori la puccia è *buona*, se invece rientra in un altro range è *bruciata*. A quel punto lo script **attiva**, attraverso un ***segnale digitale*** ed un Relè, la luce o una eventuale sirena (**l'attuatore**) per ogni puccia bruciata presente nel **frame**. Nel mentre l'algoritmo raccoglie **dati** (es. numero pucce buone, non buone etc.) e li scrive periodicamente su un *foglio Google*; parallelamente effettua ***l'upload*** di alcuni frame di pucce bruciate e *non* su ***Google Drive*** in *cartelle specifiche* (come già descritto nell'introduzione).
+Grazie a queste funzioni, l'algoritmo riconosce le pucce presenti nell'immagine e gli assegna un **ID** (*univoco* per distinguere una puccia da un'altra durante *l'analisi dei frame*), poi effettua la **media colore** delle *circonferenze* (nello specifico la media colore del ***rettangolo iscritto nella circonferenze***). Se le medie rientrano in un determinato **range** di colori la puccia è *buona*, se invece rientra in un altro range è *bruciata*. A quel punto lo script **attiva**, attraverso un ***segnale digitale*** ed un Relè, la luce o una eventuale sirena (**l'attuatore**) per ogni puccia bruciata presente nel **frame**. Nel mentre l'algoritmo raccoglie **dati** (es. numero pucce buone, non buone etc.) e li scrive periodicamente su un *foglio Google*; parallelamente effettua ***l'upload*** di alcuni frame di pucce bruciate e *non* su ***Google Drive*** in *cartelle specifiche* (come già descritto nell'introduzione).
 
-## Open Source e Documentazione:
-Questo progetto è open source: chiunque può scaricare i file necessari, ricreare il progetto e contribuire al suo miglioramento. Non ci sono restrizioni di licenza d'uso, ma si invita a citare che è stato realizzato dagli studenti [ASIRID.](http://asirid.it)
-
-Tutto il materiale necessario si trova [su GitLab.](https://gitlab.com/poggiolevante/puccia-perfetta)
 
 ## Requisiti HW:
 ![Puccia-RaspBox](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/rasp_box.jpg)
@@ -85,15 +87,15 @@ Tutto il materiale necessario si trova [su GitLab.](https://gitlab.com/poggiolev
 >- ***Main_scripts.py***: è l'insieme degli **script** *"principali"* (*main.py, main_debug.py, Picker.py*)
 
 ## Passi da seguire per l'implementazione:
-Dopo aver preparato e collegato tutti i dispositivi come riportato nella topologia *in figura*, avviare il **RaspBerryPi** e :
+Dopo aver preparato e collegato tutti i dispositivi come riportato nella topologia *in figura*, avviare il **RaspBerry Pi** e :
 - Aprire il **terminale** Linux
-- Lanciare i seguenti ***comandi*** (con i ***privilegi di amministratore***):
+- Lanciare i seguenti ***comandi*** (con i ***privilegi di root***):
 
 ```console
+rasp@puccia:~$ sudo apt update && sudo apt full-upgrade -y
+# per aggiornare tutto il sistema
 rasp@puccia:~$ sudo apt install libatlas-base-dev
 # per installare le librerie di base
-rasp@puccia:~$ sudo apt-get update && sudo apt full-upgrade -y
-# per aggiornare l'intero sistema
 ```
 - Spostarsi tramite ***console*** nel percorso/cartella che più si preferisce e lanciare il comando:
 ```console
@@ -102,7 +104,7 @@ rasp@puccia:~$ git clone https://gitlab.com/poggiolevante/puccia-perfetta
 ```
 - Spostarsi nella cartella della repository *appena scaricata*:
 ```console
-rasp@puccia:~$ cd ../puccia-perfetta
+rasp@puccia:~$ cd puccia-perfetta
 ```
 - Installare le ***librerie necessarie*** per gli script del progetto, tramite *questo comando*:
 ```console
