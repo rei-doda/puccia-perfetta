@@ -101,7 +101,7 @@ try:
             print("Exception Name: ", e.__class__.__name__)
             exit()
 
-        if mins % interval == 0 and write is False and len(centroid_obj.print_current_id()) != 0:
+        if mins % interval == 0 and write is False:
             try:
                 sheet_thread = Thread(target=g_handler.insert_dats(dats))
                 sheet_thread.start()
@@ -111,8 +111,9 @@ try:
                 print("")
                 print("OPS, something goes wrong with google sheets: ", e)
                 print("Exception Name: ", e.__class__.__name__)
-            cv2.imwrite(os.path.join(values["image_drive_path"], str(int(datetime.now().timestamp())) + ".jpg"),
-                        full_frame)
+            if len(centroid_obj.print_current_id()) != 0:
+                cv2.imwrite(os.path.join(values["image_drive_path"], str(int(datetime.now().timestamp())) + ".jpg"),
+                            full_frame)
             write = True
         elif mins % interval != 0 and write is True:
             write = False
