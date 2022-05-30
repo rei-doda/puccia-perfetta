@@ -31,6 +31,7 @@ factor = 1.0
 block_hour = 2
 block_min = 0
 block_sec = 0
+sheet_name = "Dati_Puccia_Perfetta"
 rele = Thread(target=nothing)
 # arm = Thread(target=nothing)
 
@@ -40,7 +41,7 @@ if values["cred_path"] is None:
           "on google sheet and will not push image on google drive")
 else:
     try:
-        g_handler = GSheetHandler(values["cred_path"], "Dati_Puccia_Perfetta")
+        g_handler = GSheetHandler(values["cred_path"], sheet_name)
     except Exception as e:
         print("")
         print("OPS, something goes wrong with the constructor of GSheetHandler, "
