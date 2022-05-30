@@ -101,7 +101,7 @@ try:
             print("Exception Name: ", e.__class__.__name__)
             exit()
 
-        if mins % interval == 0 and write is False:
+        if mins % interval == 0 and write is False and len(centroid_obj.print_current_id()) != 0:
             try:
                 sheet_thread = Thread(target=g_handler.insert_dats(dats))
                 sheet_thread.start()
@@ -216,7 +216,7 @@ try:
                 cv2.putText(full_frame, str(avg), (xr + rr, yr - rr), font, 0.5, (255, 255, 0))
 
         centroid_obj.update_lost_centroids()
-        centroid_obj.print_current_id()
+        print(centroid_obj.print_current_id())
 
         full_frame = cv2.resize(full_frame, (int(full_frame.shape[1] * factor), int(full_frame.shape[0] * factor)))
 

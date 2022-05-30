@@ -83,8 +83,8 @@ class CentroidIDPuccia:
         self.still_in = []
 
     def print_current_id(self):
-        """This method is used simply to print the IDs present in the frame, it does not accept parameters"""
-        print(list(self.pucce.keys()))
+        """This method is used simply to return the IDs present in the frame, it does not accept parameters"""
+        return list(self.pucce.keys())
 
     def update_id_centroids(self, coords: list, distance: float = 30):
         """This method is used to update the list of IDs that are present in the frame,
