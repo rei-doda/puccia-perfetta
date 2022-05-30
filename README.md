@@ -1,34 +1,8 @@
-# Puccia Perfetta
-
-Puccia perfetta is a program created by PoggioLevante for Valle Fiorita. It detects **Burned Puccias**.
-
-## Requirements
-
-sudo apt install libatlas-base-dev  
-
-Python 3
-
-Move to project's folder and use `pip install -r requirements.txt` to install the required dependencies.
-
-## Configuration
-
-Run *Picker.py* to start configuring the program.
-
-`python Picker.py`
-
-Select the source etc.etc.
-
-Run *main.py* to start program
-
-## Run
-
-`python3 main.py` or `py -3 main.py`
-
 # Puccia-Perfetta
 Un sistema in grado di riconoscere, grazie ad una videocamera, delle pucce **bruciate** in fase di produzione e che notifica tramite un **attuatore** (sonoro o visivo) l'arrivo di quest'ultime. Il sistema è anche in grado di scrivere i dati raccolti su un foglio di calcolo google al fine di effettuare **analisi sulla produzione** ed è in grado di caricare foto su **Google Drive** con il fine di effettuare test e studi per migliorare il **riconoscimento** delle pucce da **scartare** in produzione. ![Puccia-perf](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/puccia-perf.png)
 
 # Specifiche del progetto:
-Il progetto è nato dall'esigenza di un'azienda che produce prodotti alimentari, di **facilitare** la vita al suo addetto al confezionamento. Quest'ultimo vedendosi arrivare moltissime pucce da impacchettare, necessitava di un **segnale** che lo avvisasse dell'arrivo di una puccia **"non buona",** in modo tale da prepararsi a scartarla. Per risolvere questo problema, abbiamo pensato ad un sistema costituito da da pochissimi componenti, come un **RaspBerryPi** che, attraverso una **telecamera** individua e segnala le pucce (per il momento solo quelle **bruciate**) da scartare. Per testare il codice scritto ***ad-hoc*** per il progetto abbiamo costruito un **nastro trasportatore** per *"simulare"* il nastro sul quale le pucce vengono portate dal forno alla zona di confezionamento, presente in azienda.
+Il progetto è nato dall'esigenza di un'azienda che produce prodotti alimentari, di **facilitare** la vita al suo addetto al confezionamento. Quest'ultimo vedendosi arrivare moltissime pucce da impacchettare, necessitava di un **segnale** che lo avvisasse dell'arrivo di una puccia **"non buona",** in modo tale da prepararsi a scartarla. Per risolvere questo problema, abbiamo pensato ad un sistema costituito da pochissimi componenti, come un **RaspBerryPi** che, attraverso una **telecamera** individua e segnala le pucce (per il momento solo quelle **bruciate**) da scartare. Per testare il codice scritto ***ad-hoc*** per il progetto abbiamo costruito un **nastro trasportatore** per *"simulare"* il nastro sul quale le pucce vengono portate dal forno alla zona di confezionamento, presente in azienda.
 ![Puccia-Demonstrator](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/demonstrator.jpg)
 
 > *Il **processo** di ***costruzione*** del dimostratore non è descritto in questa documentazione, ma nel caso si volesse riprodurre, l'importante è avere bene in mente **l'idea** che serve un **nastro** che *scorre* (sul quale andranno adagiate le pucce) e una **videocamera** che *punta* proprio sul telo o nastro. In più basta un po' ***pazienza***, di ***creatività*** e un po' di ***olio di gomito***.
@@ -161,8 +135,8 @@ rasp@puccia:~$ python3 Picker.py
 > - **Auto_WB**: serve per attivare o meno il ***bilanciamento automatico dei bianchi***.
 > - **Min_radius, Max_radius**: servono rispettivamente per selezionare il *raggio* *minimo* e il *raggio massimo* (in questo caso delle nostre pucce) che il nostro sistema deve rilevare. Finestra di riferimento: **Frame_radius**. Dall'immagine di possono notare due circonferenze: quella **blu** (*Min_radius*), quella **rossa** (Max_radius).
 > - **Arm_verse**, **Arm_limiter**: servono per il braccio-robotico, nello ***stato attuale*** del progetto non ***vanno utilizzati***.
->- **Roi_x, Roi_y**, **wx**, **wy** : utilizzati in combinazione con ***wx*** e ***wy*** per delimitare un ***Range of Interest*** a partire dal frame HSV. Questo per eliminare dal frame che sarà dato in pasto allo script, eventuali *porzioni periferiche* dell'immagine ***non necessarie***. Finestra di riferimento: **Frame_radius**(*Roi visualizzabile in quest'ultima, è rappresentato dal rettangolo blu*).
->- **Morph_Blur**: serve per scegliere effetti usare sul **frame HSV**, se settato a **0** usa sia il ***blur*** che l'effetto dato dai ***morph***, se settato a **1** utilizza solo i ***morph***, se settato a **2** invece utilizza solo il ***blur***.
+>- **Roi_x, Roi_y**, **wx**, **wy** : utilizzati in combinazione con ***wx*** e ***wy*** per delimitare un ***Range of Interest*** a partire dal frame HSV. Questo per eliminare dal frame che sarà dato in pasto allo script, eventuali *porzioni periferiche* dell'immagine ***non necessarie***. Finestra di riferimento: **Frame_radius** (*Roi visibile grazie al  rettangolo blu*).
+>- **Morph_Blur**: serve per scegliere quali effetti usare sul **frame HSV**, se settato a **0** usa sia il ***blur*** che l'effetto dato dai ***morph***, se settato a **1** utilizza solo i ***morph***, se settato a **2** invece utilizza solo il ***blur***.
 >- **Debug_mode**: serve per avviare a *configurazione **finita*** un altro script, nello specifico ***main_debug.py***. Se settato a **0** *non avvierà nulla*, se settato a **1** lo avvierà.
 
 - Una volta conclusa la configurazione con **.\Picker.py** premere "***s***" per *salvare* (oppure "***q***" per uscire *senza salvare*).
@@ -175,9 +149,51 @@ rasp@puccia:~$ python3 main_debug.py
 >![Puccia-Conf](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/Sample_mdebug.png)
 >Lo script è molto simile al **.\Picker.py**, serve per visualizzare in *tempo reale* gli effetti della configurazione fatta e nel caso sistemare qualche valore come per esempio il *raggio*. Mostra la finestra **"Operative_Mask"** che non è altro che la *maschera*, costruita con la configurazione precedente, che lo script utilizza per *rilevare le pucce*. L'altra finestra: **"Puccia_Cam"** da cui è possibile vedere in tempo reale il ricoscimento della puccia, al centro si trova **l'ID**, in alto a sinistra il valore del ***raggio rilevato*** e in alto a destra la ***media colore*** (se è buona avrà un valore *alto*, se è bruciata il valore sarà *basso*).
 >Gli slider presenti sono praticamente *gli stessi* di .\Picker.py, con un aggiunta però:
->- **mAVG_color, MAVG_color**: (*valore minimo, valore massimo*) muovendo questi slider si vanno selezionare *i valori della media colore* per il quale la puccia riconosciuta è considerata ***buona*** o ***bruciata***. (Nel caso fosse buona il ***cerchio di rilevazione*** sarà **verde**, se bruciata invece sarà **rosso**).
+>- **mAVG_color, MAVG_color**: (*valore minimo, valore massimo*) muovendo questi slider si vanno a selezionare *i valori della media colore* per il quale la puccia riconosciuta è considerata ***buona*** o ***bruciata***. (Nel caso fosse buona il ***cerchio di rilevazione*** sarà **verde**, se bruciata invece sarà **rosso**).
 
-- Conclusa anche la configurazione con il **.\main_debug.py** premere "s" per salvare
+- Conclusa anche la configurazione con il **.\main_debug.py** premere "s" per salvare.
+- A questo punto dovrebbe avviarsi in automatico **\main.py**,  lo script principale. Nel caso non si avviasse:
+```console
+rasp@puccia:~$ python3 main.py
+# eseguire il comando nella cartella della repository
+```
+- Il sistema adesso è in grado di rilevare correttamente e segnalare le pucce, tra le schermate troviamo:
+![Puccia-main](https://gitlab.com/poggiolevante/puccia-perfetta/-/raw/master/Resource/Media/Puccia-main.png)
+Le finestre *Operative_Mask* e *Puccia_CAM* sono le stesse di **.\main_debug.py**, sulla finestra del terminale invece saranno stampati eventuali messaggi: per esempio quando la scrittura sul foglio verrà effettuata con successo. Oppure **messaggi di errore**, con *descrizione* (e ovviamente gli **ID** delle *pucce presenti* in *Puccia_CAM*).
+
+## Configurazione delle credenziali per Google Drive:
+Per utilizzare le **feature** di *upload* di **dati e immagini** necessitiamo di alcuni file che permetteranno al sistema di *autenticarsi* e quindi di ricevere i *permessi di scrittura* e *upload*.
+- Per la procedura di creazione delle *credenziali* per scrivere su **Google sheet**, rimandiamo a questo [video](https://www.youtube.com/watch?v=4ssigWmExak&t=814s) (dal minuto 3:40 in poi). Una volta scaricato il file **.json** rinominarlo in ***creds.json*** e spostarlo in ***.\Lib\Creds***.
+- Invece per la creazione dei file **.json** per l'upload di immagini, consigliamo di seguire questa [guida](https://gitlab.com/poggiolevante/puccia-perfetta/-/blob/master/Resource/Doc/Get+Authentication+for+Google+Service+API+.pdf). Una volta creati i file ***"settings.yaml"*** e ***"client_secrets.json"*** spostarli nella cartella ***.\Lib\Creds***.
+
+Avviato lo script **main.py** vi chiederà di fare l'accesso con l'*account Google* con il quale avete creato le **credenziali**. Fatto la prima volta non vi sarà più richiesto.
+
+## Demone Linux:
+Per eseguire lo script *all'avvio* del **RaspBerryPI**:
+- Aprire [questo](https://gitlab.com/poggiolevante/puccia-perfetta/-/blob/master/Resource/Puccia-Daemon.service) **file**
+- **Modificare** le voci racchiuse tra **< .. >** (*es. al posto di <abs_path_puccia-perfetta> va messo il percorso assoluto della repository*)
+- Copiare il file in  **/etc/systemd/system/**
+- Poi *attivarlo* con il **comando** da terminale:
+```console
+rasp@puccia:~$ sudo systemctl enable Puccia-Daemon
+# Al riavvio del RaspBerryPI lo script partirà automaticamente
+```
+- Nel caso si volesse far partire **subito** senza riavviare: 
+```console
+rasp@puccia:~$ sudo systemctl start Puccia-Daemon
+```
+
+## Variabili modificabili: 
+Variabili presenti in **.\main.py**:
+```python
+19 - fold_image_drive_burned = "<str>" # token della cartella Google Drive che conterrà le immagini delle pucce bruciate rilevate
+20 - fold_image_drive_random = "<str>" # token della cartella Google Drive che conterrà le immagini prese a campione
+28 - interval = <int> # intervallo di tempo (in minuti) per stabilire ogni quanto lo script fara uno screen delle pucce prese a campione 
+31 - block_hour = <int> # range(1, 24) ora in cui lo script caricherà le immagini su drive  
+32 - block_min = <int> # range(0, 60) minuto in cui lo script caricherà le immagini su drive
+33 - block_sec = <int> # range(0, 60) secondo in cui lo script caricherà le immagini su drive  
+34 - sheet_name = "<str>" # nome del foglio google su cui andranno scritti i dati raccolti
+```
 
 ## Stato attuale del progetto:
 Il progetto è stato pubblicato a Maggio 2022, nella sua **prima versione** ed è **attualmente funzionante**.
